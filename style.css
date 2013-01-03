@@ -89,7 +89,7 @@ header h1 {
 
 #thePoster {
 	display: inline-block;
-	max-width: 90%;
+	max-width: 25%;
 	margin: 20px auto;
 	-webkit-box-shadow: 1px 1px 20px #000000;
 	-moz-box-shadow: 1px 1px 20px #000000;
