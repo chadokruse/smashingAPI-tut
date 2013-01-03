@@ -24,20 +24,60 @@ $(document).ready(function() {
 			
 				//They must have entered a value, carry on with API call, first display a loading message to notify the user of activity
 				$('#poster').html("<h2 class='loading'>Your poster is on its way!</h2>");
-				$.getJSON("http://api.themoviedb.org/2.1/Movie.search/en/json/fb565d74e9408068a827dcd87e0eb7d5/" + film + "?callback=?", function(json) {
 				
-					//TMDb is nice enough to return a message if nothing was found, so we can base our if statement on this information
-					if (json != "Nothing found.") {
-					
-						//Display the poster and a message announcing the result
-						$('#poster').html('<h2 class="loading">Well, gee whiz! We found you a poster, skip!</h2><img id="thePoster" src=' + json[0].posters[2].image.url + ' />');
-					} else {
-					
-						$.getJSON("http://api.themoviedb.org/2.1/Movie.search/en/json/fb565d74e9408068a827dcd87e0eb7d5/goonies?callback=?", function(json) {
+				//The original v2.1 API call
+				//$.getJSON("http://api.themoviedb.org/2.1/Movie.search/en/json/fb565d74e9408068a827dcd87e0eb7d5/" + film + "?callback=?", function(json) {
+				
+				//TODO Use short form getJSON call instead of long-form AJAX call
+				//$.getJSON("http://api.themoviedb.org/3/search/movie?api_key=fb565d74e9408068a827dcd87e0eb7d5&language=en&query=" + film + "?callback=?", function(json) {
+				$.ajax({
+     				type: 'GET',
+      				url: 'http://api.themoviedb.org/3/search/movie?api_key=fb565d74e9408068a827dcd87e0eb7d5&query=' + film,
+      				async: false,
+      				jsonpCallback: 'test',
+      				contentType: 'application/json',
+      				dataType: 'jsonp',
+      				success: function(json) {
+
+						//TMDb API v3 no longer provides the "Nothing found" message, so we need to change our if statement
+						if (json.results.length !== 0) {
 							console.log(json);
-							$('#poster').html('<h2 class="loading">We\'re afraid nothing was found for that search, we presume you were trying to search for The Goonies?</h2><img id="thePoster" src=' + json[0].posters[2].image.url + ' />');
-						});
-					}
+					
+							//Display the poster and a message announcing the result
+							$('#poster').html('<h2 class="loading">Well, gee whiz! We found you a poster, skip!</h2><img id="thePoster" src="http://cf2.imgobject.com/t/p/w500' + json.results[0].poster_path + '" />');
+							
+							//Here's the original v2.1 output code
+							//$('#poster').html('<h2 class="loading">Well gee whiz, we found you a poster skip!</h2><img id="thePoster" src=' + json[0].posters[0].image.url + ' />');
+							
+						} else {
+						
+							//The original v2.1 API call for when no results were found
+							//$.getJSON("http://api.themoviedb.org/2.1/Movie.search/en/json/fb565d74e9408068a827dcd87e0eb7d5/goonies?callback=?", function(json) {
+					
+							$.ajax ({
+								type: 'GET',
+								url: 'http://api.themoviedb.org/3/search/movie?api_key=fb565d74e9408068a827dcd87e0eb7d5&query=goonies',
+								async: false,
+								jsonpCallback: 'test',
+								contentType: 'application/json',
+								dataType: 'jsonp',
+								success: function(json) {
+									$('#poster').html('<h2 class="loading">We\'re afraid nothing was found for that search, we presume you were trying to search for The Goonies?</h2><img id="thePoster" src="http://cf2.imgobject.com/t/p/w500' + json.results[0].poster_path + '" />');
+									
+									//Here's the original v2.1 output code
+									//$('#poster').html('<h2 class="loading">We\'re afraid nothing was found for that search, we presume you were trying to search for The Goonies?</h2><img id="thePoster" src=' + json[0].posters[2].image.url + ' />');	
+									console.log(json);
+								},
+								error: function(e) {
+         							console.log(e.message);
+      							}
+							});
+						}
+        				
+      				},
+      				error: function(e) {
+         				console.log(e.message);
+      				}
 				});
 			}
 			return false;
