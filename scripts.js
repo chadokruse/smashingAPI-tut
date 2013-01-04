@@ -29,7 +29,7 @@ $(document).ready(function() {
 				//$.getJSON("http://api.themoviedb.org/2.1/Movie.search/en/json/fb565d74e9408068a827dcd87e0eb7d5/" + film + "?callback=?", function(json) {
 				
 				//TODO Use short form getJSON call instead of long-form AJAX call
-				//$.getJSON("http://api.themoviedb.org/3/search/movie?api_key=fb565d74e9408068a827dcd87e0eb7d5&language=en&query=" + film + "?callback=?", function(json) {
+				//$.getJSON("http://api.themoviedb.org/3/search/movie?api_key=fb565d74e9408068a827dcd87e0eb7d5&language=en&query=" + film + "&callback=?", function(json) {
 				$.ajax({
      				type: 'GET',
       				url: 'http://api.themoviedb.org/3/search/movie?api_key=fb565d74e9408068a827dcd87e0eb7d5&query=' + film,
